@@ -1,0 +1,10 @@
+database:
+    host: MONGODB ADDRESS
+    port: MONGODB PORT
+    db: DB NAME
+    username: USERNAME
+    password: PASSWORD
+
+facebook:
+    app_id: 123456
+    app_secret: 7654321
