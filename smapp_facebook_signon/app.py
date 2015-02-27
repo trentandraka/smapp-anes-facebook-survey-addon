@@ -3,6 +3,7 @@ import yaml
 import facebook
 from flask import Flask
 from pymongo import MongoClient
+from datetime import datetime, timedelta
 from flask import render_template, url_for, request, redirect
 
 
@@ -17,7 +18,7 @@ FACEBOOK_LINK = "https://www.facebook.com/dialog/oauth?response_type=token&clien
 def welcome():
     facebook_link = FACEBOOK_LINK.format(
         app_id=SETTINGS['facebook']['app_id'],
-        callback="http://localhost:5000" + url_for('callback_from_fb'))
+        callback=SETTINGS['url'] + url_for('callback_from_fb'))
     print facebook_link
     return render_template('welcome.html', facebook_link=facebook_link)
 
@@ -30,6 +31,7 @@ def token():
     token = request.args['fragment']
     g = facebook.GraphAPI(token)
     res = g.extend_access_token(SETTINGS['facebook']['app_id'], SETTINGS['facebook']['app_secret'])
+    res['expires_date'] = datetime.now() + timedelta(seconds=int(res['expires']))
     user = g.get_object("me")
     db = get_db_connection()
     db.users.save({
@@ -51,5 +53,5 @@ def get_db_connection():
     return db
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
 
