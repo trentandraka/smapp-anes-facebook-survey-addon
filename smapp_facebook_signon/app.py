@@ -10,15 +10,17 @@ from flask import render_template, url_for, request, redirect
 app = Flask(__name__)
 this_path = os.path.dirname(os.path.realpath(__file__))
 SETTINGS = yaml.load(open(os.path.join(this_path, 'settings.yml')))
+PERMISSIONS = ','.join(SETTINGS['facebook']['permissions'])
 
 
 
-FACEBOOK_LINK = "https://www.facebook.com/dialog/oauth?response_type=token&client_id={app_id}&redirect_uri={callback}"
+FACEBOOK_LINK = "https://www.facebook.com/dialog/oauth?response_type=token&client_id={app_id}&redirect_uri={callback}&scope={scope}"
 @app.route('/')
 def welcome():
     facebook_link = FACEBOOK_LINK.format(
         app_id=SETTINGS['facebook']['app_id'],
-        callback=SETTINGS['url'] + url_for('callback_from_fb'))
+        callback=SETTINGS['url'] + url_for('callback_from_fb'),
+        scope=PERMISSIONS)
     print facebook_link
     return render_template('welcome.html', facebook_link=facebook_link)
 
@@ -33,10 +35,12 @@ def token():
     res = g.extend_access_token(SETTINGS['facebook']['app_id'], SETTINGS['facebook']['app_secret'])
     res['expires_date'] = datetime.now() + timedelta(seconds=int(res['expires']))
     user = g.get_object("me")
+    permissions = g.get_object("me/permissions")
     db = get_db_connection()
     db.users.save({
         "user": user,
-        "token": res
+        "token": res,
+        "permissions": permissions
         })
     return redirect(url_for('thanks', userid=user['id']))
 
@@ -49,7 +53,8 @@ def thanks(userid):
 def get_db_connection():
     cl = MongoClient(SETTINGS['database']['host'], SETTINGS['database']['port'])
     db = cl[SETTINGS['database']['db']]
-    db.authenticate(SETTINGS['database']['username'], SETTINGS['database']['password'])
+    if SETTINGS['database']['username'] and SETTINGS['database']['password']:
+        db.authenticate(SETTINGS['database']['username'], SETTINGS['database']['password'])
     return db
 
 if __name__ == '__main__':
