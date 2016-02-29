@@ -42,6 +42,7 @@ def set_user_updated(db_host, db_port, db_username, db_password, db_name, user_i
     r = col.update_one({'_id': ObjectId(user_id)}, { '$set': {'downloaded': datetime.now()} } )
 
 def download_data_for_user(user, data_store):
+    user_data = dict()
     logger.info("downloading data for user {} into data store.".format(user['user']['id']))
     g = facebook.GraphAPI(user['token']['access_token'])
 
@@ -52,8 +53,9 @@ def download_data_for_user(user, data_store):
     
     logger.info("Downloading user public profile with all fields")
     profile = g.get_object('me', fields=','.join(nonbusiness_fields))
-    data_store.store_object("{}.profile".format(user['user']['id']), profile)
-    logger.info("Public profile saved to data store.")
+    # data_store.store_object("{}.profile".format(user['user']['id']), profile)
+    user_data['profile'] = profile
+    # logger.info("Public profile saved to data store.")
 
     for graph_edge in mymeta['metadata']['connections']:
         if graph_edge in ['picture']:
@@ -61,8 +63,11 @@ def download_data_for_user(user, data_store):
             continue
         logger.info("Now downloading all data for the graph edge {}".format(graph_edge))
         alldata = download_with_paging(mymeta['metadata']['connections'][graph_edge])
-        data_store.store_object("{}.{}".format(user['user']['id'], graph_edge), alldata)
-        logger.info("{} saved to data store".format(graph_edge))
+        user_data[graph_edge] = alldata
+        # data_store.store_object("{}.{}".format(user['user']['id'], graph_edge), alldata)
+
+        # logger.info("{} saved to data store".format(graph_edge))
+    data_store.store_object(user['user']['id'], user_data)
     logger.info("Gone through all fields and edges in user metadata. All stored.")
     
     return True
