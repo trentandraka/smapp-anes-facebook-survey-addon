@@ -36,3 +36,8 @@ facebook:
         - user_work_history
 
 url: http://MY.APP.IS.SERVED.HERE
+
+data_store:
+    store_class: LocalStore
+    store_params:
+        folder: /home/yablee/temp/
