@@ -45,6 +45,13 @@ def callback_from_fb():
 def token():
     respondent_id = request.args.get('respondent_id', 'NA')
     token = request.args['fragment']
+    if token == '_': # user denied
+        db.users.insert_one({
+        "respondent_id": respondent_id,
+        "permissions": "DENIED",
+        "timestamp": datetime.now()
+        })
+        return redirect(url_for('thanks_for_nothing'))
     g = facebook.GraphAPI(token)
     res = g.extend_access_token(SETTINGS['facebook']['app_id'], SETTINGS['facebook']['app_secret'])
     user = g.get_object("me")
@@ -63,6 +70,10 @@ def token():
 def thanks(userid):
     name = get_db_connection().users.find_one({'user.id': userid})['user']['name']
     return render_template("thanks.html", name=name)
+
+@app.rout('/thank_you')
+def thanks_for_nothing:
+    return render_template('thanks_for_nothing.html')
 
 @app.route('/privacy')
 def privacy():
