@@ -79,7 +79,7 @@ def thanks(userid):
     return render_template("thanks.html", name=name)
 
 @app.rout('/thank_you')
-def thanks_for_nothing:
+def thanks_for_nothing():
     return render_template('thanks_for_nothing.html')
 
 @app.route('/privacy')
