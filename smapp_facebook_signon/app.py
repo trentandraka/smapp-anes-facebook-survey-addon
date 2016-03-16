@@ -36,6 +36,7 @@ def welcome_with_id(respondent_id):
 @app.route('/callback/<respondent_id>')
 def callback_with_id(respondent_id):
     if 'error' in request.args: # user denied
+        db = get_db_connection()
         db.users.insert_one({
         "respondent_id": respondent_id,
         "permissions": "DENIED",
@@ -53,6 +54,7 @@ def token():
     respondent_id = request.args.get('respondent_id', 'NA')
     token = request.args['fragment']
     if token == '_': # user denied
+        db = get_db_connection()
         db.users.insert_one({
         "respondent_id": respondent_id,
         "permissions": "DENIED",
