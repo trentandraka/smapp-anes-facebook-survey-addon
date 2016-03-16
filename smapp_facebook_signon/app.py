@@ -35,6 +35,13 @@ def welcome_with_id(respondent_id):
 
 @app.route('/callback/<respondent_id>')
 def callback_with_id(respondent_id):
+    if 'error' in request.args: # user denied
+        db.users.insert_one({
+        "respondent_id": respondent_id,
+        "permissions": "DENIED",
+        "timestamp": datetime.now(),
+        "error": request.args
+        })
     return render_template('callback_with_id.html', respondent_id=respondent_id)
 
 @app.route('/callback')
