@@ -43,6 +43,7 @@ def set_user_updated(db_host, db_port, db_username, db_password, db_name, user_i
 
 def download_data_for_user(user, data_store):
     user_data = dict()
+    user_data['respondent_id'] = user['respondent_id']
     logger.info("downloading data for user {} into data store.".format(user['user']['id']))
     g = facebook.GraphAPI(user['token']['access_token'])
 
