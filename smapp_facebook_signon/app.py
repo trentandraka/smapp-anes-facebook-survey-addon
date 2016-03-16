@@ -33,14 +33,15 @@ def token():
     token = request.args['fragment']
     g = facebook.GraphAPI(token)
     res = g.extend_access_token(SETTINGS['facebook']['app_id'], SETTINGS['facebook']['app_secret'])
-    res['expires_date'] = datetime.now() + timedelta(seconds=int(res['expires']))
+    # res['expires_date'] = datetime.now() + timedelta(seconds=int(res['expires']))
     user = g.get_object("me")
     permissions = g.get_object("me/permissions")
     db = get_db_connection()
     db.users.save({
         "user": user,
         "token": res,
-        "permissions": permissions
+        "permissions": permissions,
+        "timestamp": datetime.now()
         })
     return redirect(url_for('thanks', userid=user['id']))
 
