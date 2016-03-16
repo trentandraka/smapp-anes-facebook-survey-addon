@@ -78,7 +78,7 @@ def thanks(userid):
     name = get_db_connection().users.find_one({'user.id': userid})['user']['name']
     return render_template("thanks.html", name=name)
 
-@app.rout('/thank_you')
+@app.route('/thank_you')
 def thanks_for_nothing():
     return render_template('thanks_for_nothing.html')
 
