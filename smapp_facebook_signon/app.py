@@ -49,6 +49,10 @@ def thanks(userid):
     name = get_db_connection().users.find_one({'user.id': userid})['user']['name']
     return render_template("thanks.html", name=name)
 
+@app.route('/privacy')
+def privacy():
+    return render_template("privacy.html")
+
 
 def get_db_connection():
     cl = MongoClient(SETTINGS['database']['host'], SETTINGS['database']['port'])
