@@ -24,20 +24,34 @@ def welcome():
     print facebook_link
     return render_template('welcome.html', facebook_link=facebook_link)
 
+@app.route('/welcome/<respondent_id>')
+def welcome_with_id(respondent_id):
+    facebook_link = FACEBOOK_LINK.format(
+        app_id=SETTINGS['facebook']['app_id'],
+        callback=SETTINGS['url'] + url_for('callback_with_id', respondent_id=respondent_id),
+        scope=PERMISSIONS)
+    print facebook_link
+    return render_template('welcome.html', facebook_link=facebook_link)
+
+@app.route('/callback/<respondent_id>')
+def callback_with_id(respondent_id):
+    return render_template('callback_with_id.html', respondent_id=respondent_id)
+
 @app.route('/callback')
 def callback_from_fb():
     return render_template('callback.html')
 
 @app.route('/token')
 def token():
+    respondent_id = request.args.get('respondent_id', 'NA')
     token = request.args['fragment']
     g = facebook.GraphAPI(token)
     res = g.extend_access_token(SETTINGS['facebook']['app_id'], SETTINGS['facebook']['app_secret'])
-    # res['expires_date'] = datetime.now() + timedelta(seconds=int(res['expires']))
     user = g.get_object("me")
     permissions = g.get_object("me/permissions")
     db = get_db_connection()
-    db.users.save({
+    db.users.insert_one({
+        "respondent_id": respondent_id,
         "user": user,
         "token": res,
         "permissions": permissions,
