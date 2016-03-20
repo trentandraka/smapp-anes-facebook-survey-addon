@@ -19,21 +19,16 @@ facebook:
         - user_actions.news
         - user_actions.video
         - user_birthday
-        - user_education_history
         - user_events
         - user_games_activity
         - user_hometown
         - user_likes
-        - user_location
-        - user_photos
         - user_posts
         - user_relationships
         - user_relationship_details
         - user_religion_politics
-        - user_tagged_places
         - user_videos
         - user_website
-        - user_work_history
 
 url: http://MY.APP.IS.SERVED.HERE
 
