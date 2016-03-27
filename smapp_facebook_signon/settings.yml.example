@@ -27,7 +27,6 @@ facebook:
         - user_relationships
         - user_relationship_details
         - user_religion_politics
-        - user_videos
         - user_website
 
 url: http://MY.APP.IS.SERVED.HERE
