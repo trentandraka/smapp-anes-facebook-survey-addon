@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>American National Election Survey</title>
+    <title>National Public Life Survey</title>
 
     <!-- Bootstrap -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
@@ -19,28 +19,23 @@
     <![endif]-->
   </head>
   <body>
-    <img src="{{url_for('static', filename='anes_logo.jpg')}}"/>
-    <img src="{{url_for('static', filename='stanford_logo.png')}}"/>
+    <!-- <img src="{{url_for('static', filename='anes_logo.jpg')}}"/> -->
+    <img src="{{url_for('static', filename='npls-banner.png')}}"/>
+    <!-- <img src="{{url_for('static', filename='stanford_logo.png')}}"/> -->
 
     <div class="jumbotron">
       <div class="container">
-        <h1>Lorem Ipsum</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus</p>
+        <!-- <h1>National Public Life Survey</h1> -->
+        <p>Please click below to continue to Facebook. After logging in you'll be asked to approve the app that will share information with NPLS.</p>
         <p><a class="btn btn-primary btn-lg" href="{{ facebook_link }}" role="button">Log in using facebook &raquo;</a></p>
       </div>
     </div>
 
     <div class="container">
-      <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
-          <h2>Lorem Ipsum</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-        </div>
-        <div class="col-md-4">
-          <h2>Lorem Ipsum</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. <a href='/privacy'>Read more in our privacy policy.</a> </p>
+          <h2>Privacy Policy</h2>
+          <p>It is your choice to share or not share information with Stanford University. <a href='/privacy'>Read more in our privacy policy.</a> </p>
        </div>
       </div>
 
@@ -48,6 +43,7 @@
 
       <footer>
         <!-- <p>&copy; New York University 2015</p> -->
+        <p>&copy; Stanford University, National Public Life Survey 2016</p>
       </footer>
     </div>
 
