@@ -138,14 +138,14 @@ if __name__ == "__main__":
             else:
                 u = users_queue.pop(0)
                 logger.info("NO 'user' in {}".format(u))
-                    set_user_updated(
-                        SETTINGS['database']['host'],
-                        SETTINGS['database']['port'],
-                        SETTINGS['database']['username'],
-                        SETTINGS['database']['password'],
-                        SETTINGS['database']['db'],
-                        u['_id']
-                        )
+                set_user_updated(
+                    SETTINGS['database']['host'],
+                    SETTINGS['database']['port'],
+                    SETTINGS['database']['username'],
+                    SETTINGS['database']['password'],
+                    SETTINGS['database']['db'],
+                    u['_id']
+                    )
                 logger.info("Marked in DB.")
         while len(users_queue) == 0:
             logger.info("Sleeping for {} seconds before re-checking if there's work to do".format(args.sleep_time))
