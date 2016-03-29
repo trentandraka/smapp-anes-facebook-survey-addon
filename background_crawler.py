@@ -119,21 +119,25 @@ if __name__ == "__main__":
 
     while True:
         while len(users_queue) > 0:
-            logger.info("Downloading data for {name} ({id})".format(
-                name=users_queue[0]['user']['name'],
-                id=users_queue[0]['user']['id']))
-            u = users_queue.pop(0)
-            if download_data_for_user(u, data_store):
-                logger.info("Data stored succesfully.")
-                set_user_updated(
-                    SETTINGS['database']['host'],
-                    SETTINGS['database']['port'],
-                    SETTINGS['database']['username'],
-                    SETTINGS['database']['password'],
-                    SETTINGS['database']['db'],
-                    u['_id']
-                    )
-                logger.info("User marked as downloaded in DB")
+            if 'user' in users_queue[0]:
+                logger.info("Downloading data for {name} ({id})".format(
+                    name=users_queue[0]['user']['name'],
+                    id=users_queue[0]['user']['id']))
+                u = users_queue.pop(0)
+                if download_data_for_user(u, data_store):
+                    logger.info("Data stored succesfully.")
+                    set_user_updated(
+                        SETTINGS['database']['host'],
+                        SETTINGS['database']['port'],
+                        SETTINGS['database']['username'],
+                        SETTINGS['database']['password'],
+                        SETTINGS['database']['db'],
+                        u['_id']
+                        )
+                    logger.info("User marked as downloaded in DB")
+            else:
+                u = users_queue.pop(0)
+                logger.info("NO 'user' in {}".format(u))
         while len(users_queue) == 0:
             logger.info("Sleeping for {} seconds before re-checking if there's work to do".format(args.sleep_time))
             sleep(args.sleep_time)
