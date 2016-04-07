@@ -43,8 +43,8 @@ def set_user_updated(db_host, db_port, db_username, db_password, db_name, user_i
 
 def update_user_with_exception(db_host, db_port, db_username, db_password, db_name, user_id, ex):
     col = get_mongo_collection(db_host, db_port, db_username, db_password, db_name, 'users')
-    r = col.update_one({'_id': ObjectId(user_id)}, { '$set': { 'downloaded': datetime.now() },
-                                                             { 'exception': ex } } )
+    r = col.update_one({'_id': ObjectId(user_id)}, { '$set': { 'downloaded': datetime.now(),
+                                                               'exception': ex } } )
 
 def download_data_for_user(user, data_store):
     try:
