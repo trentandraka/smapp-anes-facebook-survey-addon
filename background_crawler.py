@@ -41,37 +41,45 @@ def set_user_updated(db_host, db_port, db_username, db_password, db_name, user_i
     col = get_mongo_collection(db_host, db_port, db_username, db_password, db_name, 'users')
     r = col.update_one({'_id': ObjectId(user_id)}, { '$set': {'downloaded': datetime.now()} } )
 
+def update_user_with_exception(db_host, db_port, db_username, db_password, db_name, user_id, ex):
+    col = get_mongo_collection(db_host, db_port, db_username, db_password, db_name, 'users')
+    r = col.update_one({'_id': ObjectId(user_id)}, { '$set': { 'downloaded': datetime.now() },
+                                                             { 'exception': ex } } )
+
 def download_data_for_user(user, data_store):
-    user_data = dict()
-    user_data['respondent_id'] = user['respondent_id']
-    logger.info("downloading data for user {} into data store.".format(user['user']['id']))
-    g = facebook.GraphAPI(user['token']['access_token'])
+    try:
+        user_data = dict()
+        user_data['respondent_id'] = user['respondent_id']
+        logger.info("downloading data for user {} into data store.".format(user['user']['id']))
+        g = facebook.GraphAPI(user['token']['access_token'])
 
-    logger.info("Reading user metadata to determine fields to download")
-    mymeta = g.get_object('me', metadata=1)
-    fields = [f['name'] for f in mymeta['metadata']['fields']]
-    nonbusiness_fields = [e for e in fields if 'business' not in e]
-    
-    logger.info("Downloading user public profile with all fields")
-    profile = g.get_object('me', fields=','.join(nonbusiness_fields))
-    # data_store.store_object("{}.profile".format(user['user']['id']), profile)
-    user_data['profile'] = profile
-    # logger.info("Public profile saved to data store.")
+        logger.info("Reading user metadata to determine fields to download")
+        mymeta = g.get_object('me', metadata=1)
+        fields = [f['name'] for f in mymeta['metadata']['fields']]
+        nonbusiness_fields = [e for e in fields if 'business' not in e]
 
-    for graph_edge in mymeta['metadata']['connections']:
-        if graph_edge in ['picture']:
-            logger.info("Skipping graph edge {}".format(graph_edge))
-            continue
-        logger.info("Now downloading all data for the graph edge {}".format(graph_edge))
-        alldata = download_with_paging(mymeta['metadata']['connections'][graph_edge])
-        user_data[graph_edge] = alldata
-        # data_store.store_object("{}.{}".format(user['user']['id'], graph_edge), alldata)
+        logger.info("Downloading user public profile with all fields")
+        profile = g.get_object('me', fields=','.join(nonbusiness_fields))
+        # data_store.store_object("{}.profile".format(user['user']['id']), profile)
+        user_data['profile'] = profile
+        # logger.info("Public profile saved to data store.")
 
-        # logger.info("{} saved to data store".format(graph_edge))
-    data_store.store_object(user['user']['id'], user_data)
-    logger.info("Gone through all fields and edges in user metadata. All stored.")
-    
-    return True
+        for graph_edge in mymeta['metadata']['connections']:
+            if graph_edge in ['picture']:
+                logger.info("Skipping graph edge {}".format(graph_edge))
+                continue
+            logger.info("Now downloading all data for the graph edge {}".format(graph_edge))
+            alldata = download_with_paging(mymeta['metadata']['connections'][graph_edge])
+            user_data[graph_edge] = alldata
+            # data_store.store_object("{}.{}".format(user['user']['id'], graph_edge), alldata)
+
+            # logger.info("{} saved to data store".format(graph_edge))
+        data_store.store_object(user['user']['id'], user_data)
+        logger.info("Gone through all fields and edges in user metadata. All stored.")
+
+        return True, None
+    except Exception as e:
+        return False, e
 
 def download_with_paging(link):
     try:
@@ -124,7 +132,8 @@ if __name__ == "__main__":
                     name=users_queue[0]['user']['name'],
                     id=users_queue[0]['user']['id']))
                 u = users_queue.pop(0)
-                if download_data_for_user(u, data_store):
+                ok, ex = download_data_for_user(u, data_store)
+                if ok:
                     logger.info("Data stored succesfully.")
                     set_user_updated(
                         SETTINGS['database']['host'],
@@ -135,6 +144,9 @@ if __name__ == "__main__":
                         u['_id']
                         )
                     logger.info("User marked as downloaded in DB")
+                else:
+                    logger.warn("Got an exception.")
+                    logger.warn(ex)
             else:
                 u = users_queue.pop(0)
                 logger.info("NO 'user' in {}".format(u))
