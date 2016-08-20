@@ -12,8 +12,6 @@ this_path = os.path.dirname(os.path.realpath(__file__))
 SETTINGS = yaml.load(open(os.path.join(this_path, 'settings.yml')))
 PERMISSIONS = ','.join(SETTINGS['facebook']['permissions'])
 
-
-
 FACEBOOK_LINK = "https://www.facebook.com/dialog/oauth?response_type=token&client_id={app_id}&redirect_uri={callback}&scope={scope}"
 @app.route('/')
 def welcome():
