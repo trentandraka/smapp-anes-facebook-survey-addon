@@ -17,21 +17,20 @@ PERMISSIONS = ','.join(SETTINGS['facebook']['permissions'])
 FACEBOOK_LINK = "https://www.facebook.com/dialog/oauth?response_type=token&client_id={app_id}&redirect_uri={callback}&scope={scope}"
 @app.route('/')
 def welcome():
-    facebook_link = FACEBOOK_LINK.format(
-        app_id=SETTINGS['facebook']['app_id'],
-        callback=SETTINGS['url'] + url_for('callback_from_fb'),
-        scope=PERMISSIONS)
-    print facebook_link
-    return render_template('welcome.html', facebook_link=facebook_link)
+    return render_template('welcome.html')
 
-@app.route('/welcome/<respondent_id>')
-def welcome_with_id(respondent_id):
+@app.route('/gotofacebook')
+def gotofacebook():
+    respondent_id = request.args.get('respondent_id', 'NA')
     facebook_link = FACEBOOK_LINK.format(
         app_id=SETTINGS['facebook']['app_id'],
         callback=SETTINGS['url'] + url_for('callback_with_id', respondent_id=respondent_id),
         scope=PERMISSIONS)
-    print facebook_link
-    return render_template('welcome.html', facebook_link=facebook_link)
+    return render_template('gotofb.html', facebook_link=facebook_link)
+
+@app.route('/welcome/<respondent_id>')
+def welcome_with_id(respondent_id):
+    return render_template('welcome.html', respondent_id=respondent_id)
 
 @app.route('/callback/<respondent_id>')
 def callback_with_id(respondent_id):
