@@ -14,3 +14,20 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
 sudo apt-get update
 sudo apt-get -y install mongodb-org
+
+
+## The following to set up the app
+git clone https://X/Y
+cd Y
+sudo pip install python-virtualenv
+sudo apt-get -y install python-pip
+sudo pip install virtualenv
+sudo pip install virtualenvwrapper
+
+echo "export WORKON_HOME=~/.virtualenvs" >> ~/.bashrc
+echo ". /usr/local/bin/virtualenvwrapper.sh" >> ~/.bashrc
+
+mkdir ~/.virtualenvs
+mkvirtualenv smapp-anes
+
+pip install -r requirements.txt
