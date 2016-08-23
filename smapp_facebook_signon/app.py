@@ -12,12 +12,14 @@ this_path = os.path.dirname(os.path.realpath(__file__))
 SETTINGS = yaml.load(open(os.path.join(this_path, 'settings.yml')))
 PERMISSIONS = ','.join(SETTINGS['facebook']['permissions'])
 
+ROUTE_PREFIX = SETTINGS['app-prefix']
+
 FACEBOOK_LINK = "https://www.facebook.com/dialog/oauth?response_type=token&client_id={app_id}&redirect_uri={callback}&scope={scope}"
-@app.route('/')
+@app.route(ROUTE_PREFIX + '/')
 def welcome():
     return render_template('welcome.html')
 
-@app.route('/gotofacebook')
+@app.route(ROUTE_PREFIX + '/gotofacebook')
 def gotofacebook():
     respondent_id = request.args.get('respondent_id', 'NA')
     facebook_link = FACEBOOK_LINK.format(
@@ -26,11 +28,11 @@ def gotofacebook():
         scope=PERMISSIONS)
     return render_template('gotofb.html', facebook_link=facebook_link)
 
-@app.route('/welcome/<respondent_id>')
+@app.route(ROUTE_PREFIX + '/welcome/<respondent_id>')
 def welcome_with_id(respondent_id):
     return render_template('welcome.html', respondent_id=respondent_id)
 
-@app.route('/callback/<respondent_id>')
+@app.route(ROUTE_PREFIX + '/callback/<respondent_id>')
 def callback_with_id(respondent_id):
     if 'error' in request.args: # user denied
         db = get_db_connection()
@@ -42,11 +44,11 @@ def callback_with_id(respondent_id):
         })
     return render_template('callback_with_id.html', respondent_id=respondent_id)
 
-@app.route('/callback')
+@app.route(ROUTE_PREFIX + '/callback')
 def callback_from_fb():
     return render_template('callback.html')
 
-@app.route('/token')
+@app.route(ROUTE_PREFIX + '/token')
 def token():
     respondent_id = request.args.get('respondent_id', 'NA')
     token = request.args['fragment']
@@ -72,16 +74,16 @@ def token():
         })
     return redirect(url_for('thanks', userid=user['id']))
 
-@app.route('/thanks/<userid>')
+@app.route(ROUTE_PREFIX + '/thanks/<userid>')
 def thanks(userid):
     name = get_db_connection().users.find_one({'user.id': userid})['user']['name']
     return render_template("thanks.html", name=name)
 
-@app.route('/thank_you')
+@app.route(ROUTE_PREFIX + '/thank_you')
 def thanks_for_nothing():
     return render_template('thanks_for_nothing.html')
 
-@app.route('/privacy')
+@app.route(ROUTE_PREFIX + '/privacy')
 def privacy():
     return render_template("privacy.html")
 

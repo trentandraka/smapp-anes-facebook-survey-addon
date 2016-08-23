@@ -30,8 +30,9 @@ facebook:
         - user_website
 
 url: http://MY.APP.IS.SERVED.HERE
+app-prefix: /facebook
 
 data_store:
     store_class: LocalStore
     store_params:
-        directory: /home/yablee/temp/
+        directory: /path/to/storage/
