@@ -52,7 +52,7 @@ server {
     }
 ```
 
-This serves both `/facebook` and `/static` to the gunicorn app. There's probably a cleaner way to do this.
+This serves both `/facebook` and `/static` to the gunicorn app. There's probably a cleaner way to do this. With this, `app-prefix: /facebook` should be set in `settings.yml`. With `app-prefix: /` one location in the nginx config would suffice.
 
 -----------
 Code and documentation &copy; 2014 New York University. Released under [the GPLv2 license](LICENSE).
