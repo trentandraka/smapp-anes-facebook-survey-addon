@@ -15,8 +15,44 @@ Start by copying the file `settings.yml.example` to `settings.yml`, and editing 
 For local testing, `vagrant up` sets up a fully functional self-contained app server serving the app.
 
 ### Deployment
-To mimick our deployment, clone this repo onto a server, provision it using #TODO, and voila.
+To mimick our deployment, clone this repo onto a server, provision it using #TODO.
 
+#### gunicorn + nginx
+To serve using gunicorn via nginx, one might run the gunicorn app locally at http://localhost:8000 and configure a reverse-proxy to application at :80. We serve the app at `http://example.com/facebook` (with `http://example.com/` displaying a different page). Here's an nginx config that does that:
+
+```
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server ipv6only=on;
+
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+
+        # Make site accessible from http://localhost/
+        server_name localhost;
+
+        location /facebook {
+            proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+            proxy_set_header Host $http_host;
+            proxy_redirect off;
+            if (!-f $request_filename) {
+                proxy_pass http://127.0.0.1:8000;
+                break;
+            }
+        }
+        location /static {
+            proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+            proxy_set_header Host $http_host;
+            proxy_redirect off;
+            if (!-f $request_filename) {
+                proxy_pass http://127.0.0.1:8000;
+                break;
+            }
+        }
+    }
+```
+
+This serves both `/facebook` and `/static` to the gunicorn app. There's probably a cleaner way to do this.
 
 -----------
 Code and documentation &copy; 2014 New York University. Released under [the GPLv2 license](LICENSE).
