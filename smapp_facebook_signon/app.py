@@ -22,6 +22,8 @@ def welcome():
 @app.route(ROUTE_PREFIX + '/gotofacebook')
 def gotofacebook():
     respondent_id = request.args.get('respondent_id', 'NA')
+    if respondent_id == ' ':
+        respondent_id = 'NA'
     facebook_link = FACEBOOK_LINK.format(
         app_id=SETTINGS['facebook']['app_id'],
         callback=SETTINGS['url'] + url_for('callback_with_id', respondent_id=respondent_id),
