@@ -25,6 +25,14 @@ def gotofacebook():
     if respondent_id == ' ':
         respondent_id = 'NA'
         return render_template('welcome_please_fill.html')
+
+    if 'approved-ids-filename' in SETTINGS:
+        if os.path.isfile(SETTINGS['approved-ids-filename']):
+            with open(SETTINGS['approved-ids-filename'], 'rt') as f:
+                allowed_ids = set([l.strip() for l in f])
+            if respondent_id.strip() not in allowed_ids:
+                return render_template('welcome_wrong_id.html')
+
     facebook_link = FACEBOOK_LINK.format(
         app_id=SETTINGS['facebook']['app_id'],
         callback=SETTINGS['url'] + url_for('callback_with_id', respondent_id=respondent_id),

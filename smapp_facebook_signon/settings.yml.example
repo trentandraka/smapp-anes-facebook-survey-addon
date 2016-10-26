@@ -31,6 +31,7 @@ facebook:
 
 url: http://MY.APP.IS.SERVED.HERE
 app-prefix: /facebook
+approved-ids-filename: /path/to/file/with/approved/ids.txt
 
 data_store:
     store_class: LocalStore

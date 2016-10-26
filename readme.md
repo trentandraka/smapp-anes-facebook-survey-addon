@@ -9,6 +9,9 @@ This web app allows users to authorize a facebook app for data collection, to be
 * a mongodb database in which the web app stores the user tokens it receives
 * a script that checks the database for new user tokens, downloads their data, and uploads it to a server
 
+##### Approved IDs
+There is an optional validation of user entered IDs in the welcome page. In order to make use of it, make a text file where each approved ID is entered on a single line, and give the path to that file in `settings.yaml`, under the name `approved-ids-filename`. See `settings.yaml.example`.
+
 ### Development
 Start by copying the file `settings.yml.example` to `settings.yml`, and editing it to reflect your settings (facebook app id, database location, etc).
 
