@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>American National Election Studies</title>
+    <title>New York University - Social Media and Political Participation Lab</title>
 
     <!-- Bootstrap -->
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='jumbotron.css') }}" rel="stylesheet">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='anes_favicon.png') }}" type="image/png" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='nyu-favicon.ico.png') }}" type="image/png" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -19,12 +19,12 @@
     <![endif]-->
   </head>
   <body>
-    <img src="{{url_for('static', filename='anes_logo.jpg')}}"/>
+    <img src="{{url_for('static', filename='nyu_long_color.png')}}"/>
 
     <div class="jumbotron">
       <div class="container">
         <h2>Thank you</h2>
-        <p>Please enter your unique identifier and click below to continue to Facebook. After logging in you'll be asked to approve the app that will share information with ANES.</p>
+        <p>Please enter your unique identifier and click below to continue to Facebook. After logging in you'll be asked to approve the app that will share information with New York University.</p>
         <form action="{{ url_for('gotofacebook') }}">
           <!-- <p><input type="text" name="respondent_id", id="respondent_id", placeholder="Please enter ID" value=" {{ respondent_id }}"/></p> -->
           <p>
@@ -42,7 +42,7 @@
       <div class="row">
         <div class="col-md-4">
           <h2>Privacy Policy</h2>
-          <p>It is your choice to share or not share information with Stanford University. <a href='{{ url_for("privacy") }}'>Read more in our privacy policy.</a> </p>
+          <p>It is your choice to share or not share information with New York University. <a href='{{ url_for("privacy") }}'>Read more in our privacy policy.</a> </p>
        </div>
       </div>
 
