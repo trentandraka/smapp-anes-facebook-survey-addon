@@ -59,7 +59,6 @@ def download_data_for_user(user, data_store):
         nonbusiness_fields = [e for e in fields if 'business' not in e and 'employee' not in e]
 
         logger.info("Downloading user public profile with all fields")
-        import IPython; IPython.embed()
         profile = g.get_object('me', fields=','.join(nonbusiness_fields))
         # data_store.store_object("{}.profile".format(user['user']['id']), profile)
         user_data['profile'] = profile
