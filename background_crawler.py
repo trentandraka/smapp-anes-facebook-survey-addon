@@ -57,12 +57,12 @@ def download_data_for_user(user, data_store):
         mymeta = g.get_object('me', metadata=1)
         fields = [f['name'] for f in mymeta['metadata']['fields']]
         nonbusiness_fields = [e for e in fields if 'business' not in e and 'employee' not in e]
+        other_banned_fields = {'age_range', 'admin_notes', 'labels'}
+        fields_to_ask = list(set(nonbusiness_fields) - other_banned_fields)
 
         logger.info("Downloading user public profile with all fields")
-        profile = g.get_object('me', fields=','.join(nonbusiness_fields))
-        # data_store.store_object("{}.profile".format(user['user']['id']), profile)
+        profile = g.get_object('me', fields=','.join(fields_to_ask))
         user_data['profile'] = profile
-        # logger.info("Public profile saved to data store.")
 
         for graph_edge in mymeta['metadata']['connections']:
             if graph_edge in ['picture']:
