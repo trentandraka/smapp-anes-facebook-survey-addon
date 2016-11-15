@@ -128,7 +128,7 @@ if __name__ == "__main__":
     while True:
         while len(users_queue) > 0:
             if 'user' in users_queue[0]:
-                logger.info("Downloading data for {name} ({id})".format(
+                logger.info(u"Downloading data for {name} ({id})".format(
                     name=users_queue[0]['user']['name'],
                     id=users_queue[0]['user']['id']))
                 u = users_queue.pop(0)
