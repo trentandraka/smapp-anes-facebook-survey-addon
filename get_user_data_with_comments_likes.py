@@ -2,6 +2,52 @@
 This script downloads "deep" user data - including likes and comments.
 To be run as an extra step, to download data again later, or if something's gone wrong. The main way to download the data is the `background_crawler.py` script.
 
+It assumes the users data is in a mongodb database with an address configurable at runtime.
+The MongoDB database has a collection named `users`, where user objects look like this:
+
+    {
+        "_id" : ObjectId("xxx"),
+        "timestamp" : ISODate("xxxx-xx-xx xx:xx:xx"),
+        "respondent_id" : "1234",
+        "token" : {
+                "access_token" : "xxx",
+                "expires" : "1234"
+        },
+        "user" : {
+                "name" : "name of facebook profile",
+                "id" : "application specific id of that user"
+        },
+        "permissions" : {
+                "data" : [
+                        {
+                                "status" : "granted",
+                                "permission" : "user_religion_politics"
+                        },
+                        {
+                                "status" : "granted",
+                                "permission" : "user_likes"
+                        },
+                        {
+                                "status" : "granted",
+                                "permission" : "user_posts"
+                        },
+                        {
+                                "status" : "granted",
+                                "permission" : "user_actions.news"
+                        },
+                        {
+                                "status" : "granted",
+                                "permission" : "public_profile"
+                        }
+                ]
+        }
+    }
+
+Each user is saved as a xxxxxxxx.json.gz file in OUTPUT_DIR, where xxxxxxx is that user's application specific user id on facebook.
+Users that have already been downloaded with this script, for whom a the file user_id.json.gz already exists in OUTPUT_DIR, will not be re-downloaded.
+
+-------------------------------------
+
 Usage:
     get_user_data_with_comments_likes.py [-h] [--database-ip DATABASE_IP]
                                                 [--database-port DATABASE_PORT]
@@ -130,7 +176,7 @@ def get_mongo_collection(server, port, username, password, dbname, colname):
 
 def get_users_queue(db_host, db_port, db_username, db_password, db_name, from_datetime, until_datetime):
     col = get_mongo_collection(db_host, db_port, db_username, db_password, db_name, 'users')
-    users = list(col.find({'downloaded': {'$exists': True}, 'timestamp': {'$gte': from_datetime, '$lte': until_datetime}, 'permissions': {'$ne': 'DENIED'}}))
+    users = list(col.find({'timestamp': {'$gte': from_datetime, '$lte': until_datetime}, 'permissions': {'$ne': 'DENIED'}}))
     return users
 
 if __name__ == '__main__':
@@ -140,14 +186,14 @@ if __name__ == '__main__':
     parser.add_argument('--database-username')
     parser.add_argument('--database-password',)
     parser.add_argument('--database-dbname', default='smapp_anes_fb')
-    parser.add_argument('--users-from', default='2016-11-1 00:00:00', help=r"If present, only download users who signed up after this timestamp 'YEAR-MONTH-DAY HH:MM:SS'")
-    parser.add_argument('--users-until', help=r"If present, only download users who signed up before this timestamp 'YEAR-MONTH-DAY HH:MM:SS'")
-    parser.add_argument('--concurrent-users-processes', default=3, type=int, help=" Number of users to download concurrently [3]")
-    parser.add_argument('--concurrent-requests-threads', default=2, type=int, help=" Number of threads per user [2]")
+    parser.add_argument('--users-from', default='2016-11-1 00:00:00', help=r"If present, only download users who signed up after this timestamp 'YEAR-MONTH-DAY HH:MM:SS' [datetime.min]")
+    parser.add_argument('--users-until', help=r"If present, only download users who signed up before this timestamp 'YEAR-MONTH-DAY HH:MM:SS' [datetime.max]")
+    parser.add_argument('--concurrent-users-processes', default=3, type=int, help="Number of users to download concurrently [3]")
+    parser.add_argument('--concurrent-requests-threads', default=2, type=int, help="Number of threads per user [2]")
     parser.add_argument('--output-dir', default='.')
     args = parser.parse_args()
 
-    users_still_valid = [1,2,3]
+    users_still_valid = [1,2,3] # this is a placeholder
     while len(users_still_valid)>0:
         try:
             logger.info("Getting users..")
