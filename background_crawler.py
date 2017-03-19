@@ -49,7 +49,7 @@ def set_user_updated(db_host, db_port, db_username, db_password, db_name, user_i
 
 def update_user_with_exception(db_host, db_port, db_username, db_password, db_name, user_id, ex):
     col = get_mongo_collection(db_host, db_port, db_username, db_password, db_name, 'users')
-    r = col.update_one({'_id': ObjectId(user_id)}, { '$set': { 'exception': ex } } )
+    r = col.update_one({'_id': ObjectId(user_id)}, { '$set': { 'exception': str(ex) } } )
 
 def download_with_paging(resp):
     all_data = resp.get('data', [])
@@ -180,7 +180,7 @@ if __name__ == "__main__":
                         u['_id'],
                         ex
                         )
-                    logger.warn("Marked user {} with exception in DB".format(user['user']['id']))
+                    logger.warn("Marked user {} with exception in DB".format(u['user']['id']))
             else:
                 u = users_queue.pop(0)
                 logger.info("NO 'user' in {}".format(u))
