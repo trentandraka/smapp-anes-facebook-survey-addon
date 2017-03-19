@@ -180,7 +180,7 @@ if __name__ == "__main__":
                         u['_id'],
                         ex
                         )
-                    logger.warn("Marked user {} with exception in DB".format(user['user']['id']))
+                    logger.warn("Marked user {} with exception in DB".format(u['user']['id']))
             else:
                 u = users_queue.pop(0)
                 logger.info("NO 'user' in {}".format(u))
