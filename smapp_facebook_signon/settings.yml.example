@@ -8,6 +8,7 @@ database:
 facebook:
     app_id: APP_ID
     app_secret: APP_SECRET
+    api_version: 2.5
     permissions:
         - public_profile
         - user_friends

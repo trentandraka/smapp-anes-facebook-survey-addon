@@ -64,7 +64,7 @@ def download_with_paging(resp):
 comment_fields = ['id','attachment','comment_count','created_time','from','like_count','message','message_tags','object','parent']
 def fill_post(post, g):
     try:
-        post['comments'] = download_with_paging(g.get_connections(post['id'], 'comments', fields=comment_fields))
+        post['comments'] = download_with_paging(g.get_connections(post['id'], 'comments', fields=','.join(comment_fields)))
         for comment in post['comments']:
             if comment['like_count']>0:
                 try:
@@ -79,7 +79,7 @@ def fill_post(post, g):
         post['likes'] = str(eo)
     try:
         post_fields = ['id','admin_creator','application','call_to_action','caption','created_time','description','feed_targeting','from','icon','instagram_eligibility','is_hidden','is_instagram_eligible','is_published','link','message','message_tags','name','object_id','parent_id','permalink_url','picture','place','privacy','properties','shares','source','status_type','story','story_tags','targeting','to','type','updated_time','with_tags',]
-        post['sharedposts'] = download_with_paging(g.get_connections(post['id'], 'sharedposts', fields=post_fields))
+        post['sharedposts'] = download_with_paging(g.get_connections(post['id'], 'sharedposts', fields=','.join(post_fields)))
     except Exception as eo:
         post['sharedposts'] = str(eo)
     return post
@@ -87,16 +87,16 @@ def fill_post(post, g):
 def do_one_user(user, n_threads=2):
     user_data = dict()
     user_data['respondent_id'] = user['respondent_id']
-    g = facebook.GraphAPI(user['token']['access_token'])
+    g = facebook.GraphAPI(user['token']['access_token'], version=SETTINGS['facebook']['api_version'])
     mymeta = g.get_object('me', metadata=1)
     fields = [f['name'] for f in mymeta['metadata']['fields']]
     nonbusiness_fields = [e for e in fields if 'business' not in e and 'employee' not in e]
     other_banned_fields = {'age_range', 'admin_notes', 'labels'}
     fields_to_ask = [str(e) for e in list(set(nonbusiness_fields) - other_banned_fields)]
-    profile = g.get_object('me', fields=fields_to_ask)
+    profile = g.get_object('me', fields=','.join(fields_to_ask))
     user_data['profile'] = profile
     post_fields = ['id','admin_creator','application','call_to_action','caption','created_time','description','feed_targeting','from','icon','instagram_eligibility','is_hidden','is_instagram_eligible','is_published','link','message','message_tags','name','object_id','parent_id','permalink_url','picture','place','privacy','properties','shares','source','status_type','story','story_tags','targeting','to','type','updated_time','with_tags',]
-    feed = download_with_paging(g.get_connections('me', 'feed', fields=post_fields))
+    feed = download_with_paging(g.get_connections('me', 'feed', fields=','.join(post_fields)))
     tp = ThreadPool(n_threads)
     feed_filled = tp.map(partial(fill_post, g=g), feed)
     tp.close()
