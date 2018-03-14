@@ -15,10 +15,12 @@ There is an optional validation of user entered IDs in the welcome page. In orde
 ### Development
 Start by copying the file `settings.yml.example` to `settings.yml`, and editing it to reflect your settings (facebook app id, database location, etc).
 
-For local testing, `vagrant up` sets up a fully functional self-contained app server serving the app.
+For local testing, `vagrant up` sets up a fully functional self-contained app server serving the app. Lookup instructions for installing vagrant on your system (for me on Manjaro with the Arch zsh plugin it's `pacin vagrant`).
 
 ### Deployment
 To mimick our deployment, clone this repo onto a server, provision it using #TODO.
+
+Install dependencies with `pip3 install -r requirements.txt` (or pip if using python2).
 
 #### gunicorn + nginx
 To serve using gunicorn via nginx, one might run the gunicorn app locally at http://localhost:8000 and configure a reverse-proxy to application at :80. We serve the app at `http://example.com/facebook` (with `http://example.com/` displaying a different page). Here's an nginx config that does that:
